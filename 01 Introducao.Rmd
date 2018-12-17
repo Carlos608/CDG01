@@ -1,0 +1,522 @@
+---
+title: "Ciência de Dados para Geociências"
+autor: Carlos Souza Jr., Ph.D.
+##output: html_notebook
+output: learnr::tutorial
+runtime: shiny_prerendered 
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+knitr::knit_hooks$set(evaluate = evaluate::evaluate)
+```
+
+# 1. Prática com a Linguagem R
+
+A linguagem R é um pacote integrado de programas que permite manipular dados, aplicar operações matemáticas, visuzalizar e reportar resultados de análises. Foi criada a partir da linguagem S, desenvolvida pelo Bell Laboratories (incluir fotos), no final da década de 1980 (check). A linguagem R, portanto, evoluiu a partir da linguagem S, sendo atualmente uma das cinco linguagens de programação mais usadas no mundo (incluir gráfico). Uma das características mais importantes, do "DNA" da linguagem R, é a sua forte aplicação em estatística. Contudo, é uma linguagem que é aplicada em várias disciplinas, como na área médica, psicologia, ciência da computação, matemática, dentre outras, com crescente aplicação na geociências. As aplicações de R em geociências são muito amplas. Exemplos de disciplinas de geociências que podem se beneficiar do uso da linguagem R incluem:
+
+* Geoquímica
+* Estatigrafia
+* Geoestatística
+* Mineralogia
+* Ciência dos solos
+* Hidrologia
+* Climatologia
+* Paleontologia
+* Ciências Ambientais
+* Ecologia
+
+Um característica que torna a linguangem R bastante atrativa é a fácil integração de pacotes ("packages") com funcionalidades que cobrem a manipulação de formatos de dados, aplicações geoestatísticas, visualização e análise de dados, e implementação de métodos computacionais (i.e., redes neurais), classificadores supervisionados e não supervisionados, e modelos estatísticos avançados.
+
+# 2. O primeiro contato com a linguagem R
+
+Nesta seção, vamos excutar comandos da linguagem R. O objetivo é demonstrar como a linguagem gera e manipula dados, e usar esses exemplos para explicar os conceitos fundamentais da linguagem. Para isso, é necessários ter instalado o R Studio (que será apresentado na discussão) ou rodar os comandos diretamente nesta página.
+
+### 2.1 Variáveis, operadores matemáticos
+
+####1. Variável
+
+Existem vários tipos de estruturas para armazenar dados na linguagem R. A estrutura mais básica é o vetor, que é uma coleção de dados numéricos ordenados, com uma ou mais dimensões (n) e de diferentes tipos de dados. Execute o comando abaixo criar o vertor x contento os seguintes elementos: *105, 155.5, 157, 168, 189, 87, 52.*
+
+
+
+
+Executamos dois comandos nesse exemplo. No primeiro temos três elementos:
+
+* *z* é a variável que armazena os dados do vector, com sete dimensões.
+* *<-* é um operador que assinala (registra) o conteúdo de dados a uma variável. Esse operador pode ser substituído pelo sinal de igualdade *=*, mas é uma boa prática usar o operador *<-* que pode ser digitado combinando o sinal *<* (menor que) com *-* (subtração). Um atalho para gerar esse sinal no R Studio é *"option+-"*.
+* *c( )* é uma função da linguagem R, denominada também de método, que combina seus *argumentos* (i.e. parâmetros que são passados para uma função) para criar um vetor.
+
+**EXERCÍCIO 1:**
+
+1. Execute o comando abaixo parao  vetor *x* contendo: *5, 10, 15, 20, 25, 30, 35*, para gerar o seguinte resultado:
+
+```{r exemplo2, exercise = TRUE}
+x <- c(5, 10, 15, 20, 25, 30, 35)
+```
+
+2. Em seguida, execute o comando abaixo:
+
+```{r exemplo3, exercise = TRUE}
+x <- c(5, 10, 15, 20, 25, 30, 35)
+z <- c(105, 155.5, 157, 168, 189, 87, 52.)
+plot(x,z,'l')
+```
+
+3. Agora, explique o que significa o camando *plot(x,z,'l')*.
+
+
+####2. Tipos de Variáveis
+
+As variáveis são objetos que armazenam dados. Nos exemplos acima, criamos as variáveis *x* e *z*. Essas variáveis ficam armazendas na memória do computador. Esse tipo de comportamento tem sido apontado como uma das limitações (há outras e vamos discuti-las, mas a linguagem R supera em termos de vantagens).
+
+Observe o que acontece quando executamos o código abaixo.
+
+```{r exemplo4, exercise = TRUE}
+x <- c(5, 10, 15, 20, 25, 30, 35)
+z <- c(105, 155.5, 157, 168, 189, 87, 52.)
+x; z
+```
+
+Os valores armazenados nas variáveis *x* e *z* são impressos na tela do computador. Esse tipo de impressão é chamada de auto-impressão, o mesmo resultado quando aplicamos a função  *print()*. Execute essa função passando como parâmetro as variáveis *x* e *y*. Observe que as variáveis *x* e *z* estão separadas por *;*. Isso permite executar vários comandos na mesma linha.
+
+A linguagem R possui os seguintes tipos de dados (ou objetos, sendo mais preciso):
+
+**Tabela 1**. Tipos de variáveis (objetos) da linguagem R.
+
+| Tipo de Dados | Descrição | Declaração |
+|:-:|:-|:-|
+|character | armazena caracteres (strings)| as.character( )|
+|numeric   | armazena números reais | as.numeric( )|
+|integer   | armazena números inteiros| as.integer( )|
+|complex   | armazena número complexos| as.complex( )|
+|logical   | armazena operadores lógicos (True/False)| as.logical( )|
+| | |
+
+Execute os comandos abaixo para criar esses tipos de variáveis.
+```{r exeemplo5, exercise = TRUE}
+valor <- c(0.5, 0.6) ## numeric
+resposta <- c(TRUE, FALSE) ## logical
+alternativas <- c("a", "b", "c") ## character 
+lista_num <- 9:29 ## integer 
+numero_complexo <- c(1+0i, 2+4i) ## complex
+mensagem <- "Hello World!" ## character
+ls() ## lista todos os objetos armazenados na memmória.
+```
+
+O bloco de código anterior criou variáveis com diferentes tipos de dados. Há muita novidade nesse bloco de código. Primeiro, as variáveis foram declaradas com um nome mais extenso. Essa é uma prática importante de programação, ou seja, devemos sempre declarar variáveis com nomes que remetam a utilidade do objeto no código. Para variáveis com nomes compostos, podemos usar o símbolo *_* como separador. A variável *lista_num* explicitamente informa que uma lista de números está sendo armazenda na variável. Isso torna o código legível e mais fácil de ser atualizado. Há outras convenções para nomes compostos de variáveis, como o padrão camelo (e.g., *listaNum*). Mas, vamos adotar letras minúsculas com o separador *_* para declarar variáveis. 
+
+O que faz o comando *ls ( )*? 
+
+O Comando *ls.str()* lista os objetos armazenados na memória. Para deletar um determinado objeto, usamos a função *rm( )*. 
+
+**EXERCÍCIO 2:**
+
+1. Crie uma variável para armazenar o tipo de rocha e atribua o valor *granito* para essa variável- . Qual o tipo de dados para esse tipo de variável.
+2. Use a função *ls.str( )* para listar os objetos armazenados na memória.
+3. Depois de executar o passo *2* execute: *2x <- 4*. O que acontece após executar esse procedimento? Corrija o problema. Após corrigir o problema, lista os objetos armazenados na memória.
+4. Use o comando *rm( )* para remover os objetos da memória.
+
+```{r exemplo6, exercise = TRUE}
+
+```
+
+####3. Operadores
+
+A Tabela 2 apresenta os tipos operadores disponíveis na linguagem R. 
+
+**Tabela 2**. Operadores da linguagem R.
+## Fonte: https://www.tutorialspoint.com/r/r_operators.htm
+
+|Aritmético | Relacional | Lógico | Atribuição | Outros
+|:-:|:-:|:-:|:-:|:-:|
+| + adição |  < menor que | !x  NÃO (NOR) lógico  | <-, =, <<- iguadade à esquerda | 
+| - subtração | > maior que | x&y | E (AND) lógico  | ->, ->> igualdade à direita | 
+| * multiplicação | <= menor que ou igual a | x&&y id. | |
+| / divisão |  >=  maior que ou igual a | x|y logical OR | |
+| ^ potenciação | == igual a | x || y id. | |
+| %% módulo | != diferente de | xor(x, y) | OU (OR) exclusivo | 
+| %/% divisão inteira | | 
+|  |  |
+
+Os comandos abaixo demonstram como esses operadores são usados e os seus resultados. 
+```{r exemplo7, exercise = TRUE}
+x <- 0.5 
+x
+0 < x & x < 1 ## 0 < x < 1
+```
+
+As funções *identical( )* e *all.equal* são usadas para comparar o conteúdo integral de objetos.
+```{r exemplo8, exercise = TRUE}
+x <- 1:3; y <- 1:3
+x == y
+
+identical(x, y) 
+all.equal(x, y) 
+```
+
+**EXERCÍCIO 3: Operações Aritméticas** [fonte](http://www.ii.uib.no/~wagner/hsalg/arithexp.htm)
+
+1. Calcule o valor das expressões aritméticas abaixo usando a linguagem R:
+
+* 2 + 3 = 5
+* 8 – 2 = 6
+* 3 * 2 = 6
+* 10 / 5 = 2
+* 2 ^ 5 = 32
+* 7 %% 3 = 1
+* 7 %/% 3 = 2
+* ((5 + 4) -3) = (9-3) = 6
+* ((7)2)3  = (49)3 = 117649
+* 7 - 6 + 2 = 1 + 2 = 3
+* 7 - (6 + 2) = 7-8 = -1
+* 5 + 62 + 1 = 5+ 12 + 1 = 17 + 1 = 18
+* (5 + 6)(2+1) = 11(2+1) = 11*3 = 33
+
+```{r exemplo9, exercise = TRUE}
+
+```
+
+**EXERCÍCIO 4: Operações Relacionais** 
+Construa os vetores *a* = (3,4,9,1,15) e *b* (2,4,9,3,15) e aplique os operadores relatcionais abaixo
+* a > b
+* a < b
+* a == b
+* a <= b
+* a >= b
+* a != b
+
+```{r exemplo10, exercise = TRUE}
+
+```
+
+
+**EXERCÍCIO 5: Operações Lógicas**
+Para os vetores *x* = (3+2i, TRUE, 3, 5, "beta") e *y* = (3+2i, FALSE, 3, 4, "Beta"), aplique os opeardores lógicos abaixo:
+
+* x AND y
+* x OR y
+* x NOT y
+* Explique as operações x && y e x || y
+
+```{r exemplo11, exercise = TRUE}
+
+```
+
+
+####4. Objetos em R
+
+Na Seção 2, apresentamos os tipos de variáveis que os objetos podem armazenar: *numeric*, *integer*, *complex* e *logical* (Tabela 1). Estes tipos de dados podem ser armazenados em diferentes tipos de objetos (Tabela 3). Os objetos devem ter um nome, conteúdo e atributos. Os atributos mais básicos são o tipo de dados (*mode* ou *class*). Funções (ou métodos) podem ser aplicadas aos objetos as quais variam com o seu tipo de dados.
+
+| Tipos de Objetos | Tipos de Dados | Pode Armazenar mais de um tipo?
+|:-:|:-:|:-:|
+|vector - variável com uma dimensão | numeric, character, complex or logical | Não |
+|factor - variável categórica | numeric or character | Não |
+|array - variável com *n* dimensões | numeric, character, complex or logical  | Não |
+|matrix - um variável *array* com duas dimensões | numeric, character, complex or logical  | Não |
+|data frame - um tabela contendo vários tipos de objetos| numeric, character, complex or logical | Sim|
+| ts - variável que representa série temporal| numeric, character, complex or logical | Não |
+|list - variável que pode conter vários tipos de objetos| numeric, character, complex, logical, function, expression,... | Sim |
+| | |
+
+Os objetos discutidos acima são também criados com funções, como mostrado nos exemplos abaixo.
+
+* Cria um vetor numérico.
+
+```{r exemplo12, exercise = TRUE}
+# cria um vetor numérico com 10 elementos. 
+# 0 se numeric, FALSE se logical, or "" se character
+vector(mode = "numeric", length = 10) 
+
+# é possível usar a função numeric( ) para obter o mesmo resultado
+numeric(10)
+```
+
+* cria um um objeto do tipo factor. 
+
+```{r exemplo13, exercise = TRUE}
+tipo_rochas <- factor(c("ígnea", "vulcânica", "sedimentar", "sedimentar", "ígnea"), levels = c("ígnea", "vulcânica", "sedimentar", "metamórfica"))
+tipo_rochas
+
+categorias <- factor(c(1,3,4,3,4,5,5,6,6,1))
+categorias
+```
+No exemplo acima, a variável *tipo_rochas* é um objeto do tipo *factor* a qual armazena valores finitos de dados categáricos para possíveis classes (levels). Observe que para a variável *categorias* as classes possíveis foram geradas automaticamente. É possível acrescentar novas classes a uma variável do tipo *factor* com a função *levels().
+
+```{r exemplo14, exercise = TRUE}
+categorias <- factor(c(1,3,4,3,4,5,5,6,6,1))
+categorias
+levels(categorias) <- c(levels(categorias), 7) #a classe 7 foi adicionada.
+categorias
+```
+É possível também modificar a classe de um elemento do um vetor. No exemplo acima, a classe *3* é assinalada para o segundo elemento do vetor. Se quisermos mudar essa classe, devemos indexar o vetor na posição da classe (neste caso 2), e atribuir uma nova classe para esse elemento, contanto que a classe exista.
+
+```{r exemplo15, exercise = TRUE}
+categorias <- factor(c(1,3,4,3,4,5,5,6,6,1))
+categorias
+categorias[2] <- 5 # muda da classe 3 para classe 5
+categorias
+```
+
+* cria um objeto do tipo lista
+
+```{r exemplo16, exercise = TRUE}
+x <- list("a" = c(5,6,7), "b" = TRUE, "c" =  c("solo", "rocha", "água"))
+x
+```
+
+No exemplo acima, x é uma lista contendo um vertor *a* (numeric), *b* (logical) e *c* (character). Usamos o comando *list()* para criar um objeto do tipo lista. Uma lista é uma estrutura de dados que pode armazenar tipos diferentes de dados (objetos). Podemos usar as funções *typeof()*, *mode()* ou *class()* para avaliar se o tipo de objeto. O exemplo abaixo usa a função *mode()*. A estrutura de dados da lista pode ser revelada com a função *str()*. Use essas funções no exemplo abaixo para ver como funcionam.
+
+```{r exemplo17, exercise = TRUE}
+x <- list("a" = c(5,6,7), "b" = TRUE, "c" =  c("solo", "rocha", "água"))
+mode(x)
+str(x)
+```
+
+Para acessar o conteúdo de uma lista podemos usar os rótudos (nomes das variáveis dos dados). Esses rótulos (*tags*) são opcionais, mas é uma boa prática de programação usar nomes que identifiquem a estrutura interna dos dados da lista. Além dos rótulos, podemos usar a indexação pela posição do elemento. A indexação da sublista é feita com *[]* e do conteúdo com *[[]]*. Vejamos como funciona no exemplo abaixo.
+
+```{r exemplo18, exercise = TRUE}
+x <- list("a" = c(5,6,7), "b" = TRUE, "c" =  c("solo", "rocha", "água"))
+
+# Acessa o conteúdo da sublista
+x$a ## mesmo que x[1]
+x$b ## mesmo que x[2]
+x$c ## mesmo que x[3]
+
+# Gera o mesmo resultado
+x[1]; x[2]; x[3]
+
+# Acessa o conteúdo da sublista
+x[["a"]]; x[[1]]
+
+# Acessa o segundo elemento da sublista.
+x[["a"]][2]
+```
+
+A indexação da lista e da sublista permitem obter o conteúdo armazendo ou acessar a posição específica e substituir (ou reclassificar) o conteúdo. Use o valor NULL para deletar  uma sublista.
+
+```{r exemplo19, exercise = TRUE}
+x <- list("a" = c(5,6,7), "b" = TRUE, "c" =  c("solo", "rocha", "água"))
+
+# reclassifica "solo" por "areia"
+x[["c"]][1] <- "areia"
+x
+
+# deleta a sublista a
+x$a <- NULL
+
+# adiciona novamente a sublista a para o final da lista.
+x <- c(list("a" = c(5,6,7)), x)
+
+```
+
+* cria um objeto do tipo matriz
+As matrizes são estruturas de dados com bi-dimensionais. Usamos a função *matrix()* para criar uma matrix. Também podemos usar os comandos *typeof()*, *mode()* ou *class()* para verificar se o objeto é do tipo matrix. O comando *atributes()* fornece informações sobre o objeto e *dim()* a sua dimensão.
+
+```{r exemplo20, exercise = TRUE}
+
+# Cria uma matriz com 20 elementos com 4 linhas (nrow) e 5 colunas (ncol)
+
+m <- matrix(1:20, nrow = 4, ncol = 5)
+m
+
+# Para uma matriz quadrada, basta atribuir o número de linhas
+mq <- matrix(1:16, nrow = 4)
+mq
+```
+
+A matriz é preenchida a partir das colunas. Mas isso pode ser mudado para o padrão linha usando o parâmetro *byrow = TRUE*.
+
+```{r exemplo21, exercise = TRUE}
+# os elementos são preenchidos por linha
+matrix(1:9, nrow=3, byrow=TRUE)
+```
+
+É possível também atribuir os nomes das linhas e colunas de uma matrix passando as listas com os nomes como parâmetro. As funções *colnames()* e *rownames()* podem ser usadas para acessar esses nomes, ou para mudá-los.
+
+```{r exemplo22, exercise = TRUE}
+x <- matrix(1:16, nrow = 4, dimnames = list(c("W", "X","Y","Z"), c("A","B","C", "D")))
+x
+colnames(x[1])
+rownames(x)
+
+# Mude os nomes das linhas para l1, l2, l3 e l4.
+```
+**EXERCÍCIO 6** - Use o comando *matrix()* para criar uma matriz quadrada 5x5, atribua nomes a suas colunas e linhas. Em seguida, use aplique as funções *dim()*, *attributes()* e explique que tipo de informação é obtida.
+
+```{r exemplo23, exercise = TRUE}
+# Exercício 6
+
+```
+
+As matrizes também podem ser criadas com as funções *cbind()* e *rbind()* conforme exemplos abaixo:
+
+```{r exemplo24, exercise = TRUE}
+m1 <- cbind(c(1,2,3),c(4,5,6))
+m2 <- rbind(c(1,2,3),c(4,5,6))
+
+# Qual o comando você pode usar para verificar o tipo dos objetos m1 e m2.
+```
+
+A indexação dos elementos também pode ser aplicada a uma matrix para acessar e/ou modificar seu conteúdo. Veja como nos exemplos abaixo:
+
+```{r exemplo25, exercise = TRUE}
+x <- matrix(1:30, nrow=5)
+
+# seleciona linhas 1 e 2, colunas 2 e 3
+x[c(1,2),c(2,3)]    
+
+# seleciona as linhas 3 e 2, e todas as colunas
+x[c(3,2),]  
+
+# seleciona as colunas de 2 a 4
+ x[,2:4]  
+
+ # exclui a linha 1
+x[-1,] 
+
+ # veja a diferença entre
+x[1,] # Qual tipo de estrutura de dados?
+x[1, , drop=FALSE]
+
+# O que acontece quando usamos esse comando?
+x[x<5] <- 0
+x <- x[1:2,]; x
+
+# Adicionando linhas e colunas a matriz
+x <- matrix(1:30, nrow=5)
+rbind(x,c(1,2,3))
+cbind(x, c(1, 2, 3))
+x
+```
+
+* cria um objeto do tipo dataframe
+
+O *dataframe* é um tipo especial de estrutura de dados bi-dimensional que combina listas com o mesmo tamanho, e diferentes tipos de dados. A maioria dos *datasets* que vamos utilizar nesse curso usará essa estrutura de dados. Um dataframe é formado por linhas (observações ou medidas) e colunas (variáveis), formando uma grade retangular, ou uma tabela. As colunas podem ser de tipos de dados variados (i.e., *numeric*, *logical*, *factor*, *character*). Há vários *dataset* que fazem parte de pacotes da linguagem R. Vamos usar o *dataset co2* que contém dados de [concentração de CO2 em Mauna Loa](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/co2.html).
+
+```{r exemplo26, exercise = TRUE}
+# [,1]	area	área com espaço poroso, em píxeis ( 256 x 256)
+# [,2]	peri	perímetro em píxeis
+# [,3]	shape	perímetro/sqrt(area)
+# [,4]	perm	permeabilidade em milli-Darcies
+# use o comando library(help = "datasets") para listar os datasets disponíveis na linguagem R.
+
+head(rock)    # imprime uma amostra do dataframe (6 x ncol)
+typeof(rock)  # tipo de estrutura interna do dataframe
+class(rock)   # class do dataframe
+names(rock)   # nome das colunas
+nrow(rock)    # número de linhas
+ncol(rock)    # número de colunas
+length(rock)  # mesmo que ncol
+```
+
+O exemplo abaixo demonstra como é possível criar um *dataframe*.
+
+```{r exemplo27, exercise = TRUE}
+dados <- data.frame(
+        "ponto" = 1:30,
+        "categoria" = x <- as.factor(sample( LETTERS[1:4], 30, replace=TRUE, prob=c(0.2, 0.2, 0.5, 0.1) ) ), # criar uma lista aleatória aleatória para as categorias (A, B, C, e D)
+        "espessura" = sample.int(200, 30, replace = TRUE) # use replace TRUE para ter números repetidos nas amastras.
+)
+
+# extrai a estrutura do dataframe
+str(dados)
+```
+
+** EXERCÍCIO 7**: Use os comandos acima para recriar o dataframe para ter 100 linhas, e mais duas categorias. Depois, explore os atributos da variável dados com as funções aplicadas a *dataframe*.
+
+```{r exemplo28, exercise = TRUE}
+# Exercício 7
+
+```
+
+Vamos agora acessar os components de um *dataframe*. Podemos usar os memos operadores aplicados à listas *[, [[* ou *$*. Observem que os resultados dos operadores *[[* e *$* retornam um vetor e *[* mantém o *dataframe*.
+
+```{r exemplo29, exercise = TRUE}
+dados <- data.frame(
+        "ponto" = 1:30,
+        "categoria" = x <- as.factor(sample( LETTERS[1:4], 30, replace=TRUE, prob=c(0.2, 0.2, 0.5, 0.1) ) ), # criar uma lista aleatória aleatória para as categorias (A, B, C, e D)
+        "espessura" = sample.int(200, 30, replace = TRUE) )
+
+dados["ponto"]   # dataframe
+dados[["ponto"]] # vetor
+dados$ponto      # vetor
+```
+
+ Os comandos abaixo ilustram como acessar o conteúndo de um *dataframe*, que é feito de forma similar ao de uma matriz.
+ 
+ 
+```{r exemplo30, exercise = TRUE}
+dados[2:5,]     # seleciona as linhas de 2 a 5.
+dados[dados$espessura > 100, ]    # seleciona linhas com espessura > 100
+dados[,2:3]  # seleciona as colunas 2 e 3
+
+head(dados) # modifica o valor da célula da linha 2 e coluna "categoria"
+dados[2,"categoria"] <- "B"
+head(dados)
+```
+
+Em alguns casos, vamos precisar adicionar ou deletar o conteúdo de um dataframe. A linguagem R é bem flexível para isso, ou seja, há várias formas de manipular o dataframe. Lembrando que um *dataframe* é um conjunto de listas com o mesmo tamanho. Isso significa que podemos usar os mesmos comandos aplicados em listas (rbind, cbind, NULL) para esses propósitos. Isso é ilustrado nos códigos abaixo.
+
+[Mineral Resources Data System (MRDS)]('https://mrdata.usgs.gov/mrds/#download-all')
+
+```{r exemplo31, exercise = TRUE}
+# adiciona um linha ao dataframe
+rbind(dados, list(1, "D", 220))
+
+# adiciona uma nova coluna ao dataframe
+dados <- cbind(dados, idade=sample.int(500, 30, replace = TRUE) )
+head(dados)
+# remove uma coluna
+dados$idade <- NULL
+head(dados) 
+
+tail(dados) # a função tail() lista as últimas seis linhas do dataframe
+
+# remove a coluna 1
+
+dados <- dados[-1,] 
+```
+
+
+# 3. Base de Dados para Geociências
+
+As geociências diversas disciplinas e as bases de dados dessas disciplinas são variadas, e estão organizadas em estruturas distintas. Essas bases são geralmente desatualizadas e com muitas lacunas. Uma tarefa importante da ciência de dados é minerar e organzar as bases de dados. 
+
+Um ponto crítico é que na maioria das vezes o pesquisador precisará criar o seu próprio banco de dados. Os dados estão geralmente disponíveis na internet e dominar as ferramentas para acessar, obter e estruturar os dados na web é uma habilidade fundamental para o cientista de dados. A internet fornece várias opções para isso. Mas, neste curso introdutório de R, usaremos apenas técnica básicas de mineração de dados na web, mas o foco principal será na busca e descarga de dados, seguido de sua importação. A linguagem R conta com vários pacotes para acessar e ler base de dados. Vamos explorar os pacotes *data.table*, *raster*, *rgdal*, *readr* e *jsonlite*. Vamos usar vários pacotes em R para baixar banco de dados que usaremos nesse curso. 
+
+
+```{r exemplo32, exercise = TRUE}
+# Acessando pacotes de dataset para R
+# primeiro, devemos instalar o pacate paleobioDB
+# depois, carregamos os dados com o comando library()
+library(paleobioDB)
+help(paleobioDB)
+```
+
+```{r exemplo33, exercise = TRUE}
+# usamos o pacato data.table para baixar dados da internet
+# fonte: https://www.co2.earth/historical-co2-datasets
+library(data.table)
+# Acessando dados diretamento de uma URL
+teste <- fread('ftp://data.iac.ethz.ch/CMIP6/input4MIPs/UoM/GHGConc/CMIP/yr/atmos/UoM-CMIP-1-1-0/GHGConc/gr3-GMNHSH/v20160701/mole_fraction_of_carbon_dioxide_in_air_input4MIPs_GHGConcentrations_CMIP_UoM-CMIP-1-1-0_gr3-GMNHSH_0000-2014.csv')
+head(teste)
+```
+
+
+Podemo baixar também os dados de uma página e lendo-os com pacotes específicos. Vamos usar os dados da 
+[Mineral Resources Data System (MRDS)](https://mrdata.usgs.gov/mrds/).
+
+
+
+
+
+
+
+
+
+
+
+
+

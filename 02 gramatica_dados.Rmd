@@ -1,0 +1,210 @@
+---
+title: "Ciência de Dados para Geociências"
+autor: Carlos Souza Jr., Ph.D.
+##output: html_notebook
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Gramática de Dados com R
+
+Na primeira parte do curso exploramos os comandos básicos, os tipos de dados e as diversas estruturas que os dados podem ser armazenados na linguagem R. Finalizamos com uma amostra de dados que podem ser úteis em projetos de geociências para apreender, nesta seção, como manipular dados e aplicar ténicas de estatística exploratória. Vamos usar o *dataset diamonds*, disponível com o pacote ggplot, para esse propósito. Esse base de dados contém cerca de 50 mil diamantes, con informações sobre quilate (carat), qualidade (cut), clareza (clarity), profundidade (depth), tabela (tabela), preço em dólar (price), e dimensões em cm (X, Y, Z)
+
+```{r exemplo1, exercise = TRUE}
+library(ggplot2) # carrega bibliote que contém a base de dados.
+data(diamonds)
+head(diamonds)
+```
+
+A gramática de dados é uma forma de aplicar ténicas para manipulação e análise baseada em ações (verbos) objetivas. Essa ténica é implementada no pacote *dplyr* que segue a mesma filosifia do pacote *ggplot* utilizado para visualização de dados. Juntos, esses pacotes oferecem um poderoso arsenal de ferramentas para ciência de dados. Os passos para aplicar a esse conjunto de técnicas é apresentado na figura abaixo.
+ 
+<img src = "http://r4ds.had.co.nz/diagrams/data-science.png", width = "30%">
+
+Os dados geralmente estão armazendos em banco de dados, na Web ou em arquivos em seu computador. O primeiro passo é importar esses dados para a Linguagem R. Os dados precisam estar organizados, seguindo um padrão de estrutura para faciliar a aplicação de técnicas análises, modelagem e de visualização. Essa etapa chama-se arrumar (tidy) os dados. O termo utilizado em R é tidy que significa armazenar os dados de forma consistente sendo que cada coluno representa uma variável, cada linha uma observação e cada cécula um valor. Várias téncicas de transformações são aplicadas para criar novas variáveis, reamostrar os dados, e extrair estatísticas. Esses dados transformados podem ser facilmente visualizados e passados para modelos. O último passo, e um dos mais importantes, é a comunicação dos resultados. A linguagem R dispõe de um arsenal de programas (pacotes, dados e funções) para aplicar essas ténicas de ciência de dados.
+
+Antes de aplicarmos os 'verbos' aos dados, temos que entender melhor a estrutura ideal dos dados para que eles sejam aplicados corretamente. Um conceito importante é **tidy data** (ou seja, um dado arrumado). Um *tidy data* possue as seguintes características:
+
+1. Cada variável no *dataset* está apenas em uma coluna.
+2. Cada observação está apenas em uma linha.
+3. Cada valor ocorrer apenas em uma célula.
+
+A diferença entre um *data frame* e um *tidy data* é que o primeiro caso é uma lista de vetores organizados no formato de tabela, enquanto que no segundo, os valores de cada variável ocorrem na sua própria coluna (que é um vetor também). Ou seja, o *tidy data* tem que seguir as regras acima, enquanto que no *data frame* a tabela de vetores nem sempre as respeitará (Figura 1).
+
+<img src ="http://garrettgman.github.io/images/tidy-1.png", width = "50%">
+
+**Figura 1**. Exemplo de uma tabela no formato tidy.
+
+Vamos aprender os seguintes conjuntos de verbos da gramática de dados para as seguintes aplicações: extrair estatística exploratória de dados, manipular o conteúdo das tabelas e reformatar as tabelas. Mas, primeiro vamos aprender sobre um importante comando que é útil para aplicar as técnicas de gramática de dados: o operador %>% (pipe).
+
+## O Operador % > % (pipe)
+
+O operador *% > %* passa o resultado do primeiro comando para o comando seguinte. Use *Ctrl+Shift+M* para gerar esse operador. Vamos ver como ele funciona no exemplo abaixo:
+
+```{r exemplo2, exercise = TRUE}
+library(dplyr)
+data("diamonds")
+diamonds %>%
+  group_by(cut) %>%
+  summarise( min(price), # mínimo
+             max(price), # máximo
+             mean(price)
+             ) # média
+```
+
+Como o exemplo acima, fica mais fácil entender a aplicação da gramática de dados ao *dataset diamonds*: *agrupar por "cut" então sumizar estatísticas de preço*. Usamos dois *verbos* no exemplo acima:
+
+* group_by (agrupar) - para agrupar em classes (*factor*).
+* summarise (sumarizar) - para sumarizar as estiatísticas.
+
+É importante ressaltar que o comando *pipe* é orginal do pacote *margrettr* e é carregado automaticamente pelo pacote *dplyr*. Na prática significa *então* e é similar a resolver uma função encadeada:
+
+$ f(g(h(x))) $
+*h() %>% g() %>% f()*
+
+## Estatística exploratória
+Já aplicamos algumas funções estatísticas no exemplo anterior. Agora, vamos aplicar uma lista mais exaustiva dessas funções e formatar a tabela usando o camando *grid.table* do pacote *gridExtra*. 
+
+```{r exemplo3, exercise = TRUE}
+# carrega os pacotes para gerar uma tabela formatada.
+library(gridExtra)
+library(grid)
+
+tabela <- diamonds %>% 
+            group_by(cut) %>% # incluir clarity
+            summarise(Mínimo = min(price),
+              q25 = quantile(price, 0.25), 
+              q75 = quantile(price, 0.75), 
+              Máximo = max(price),
+              Média = mean(price),
+              Desvio.Padrão = sd(price)
+            )
+print(tabela)
+grid.table(tabela)
+```
+
+## A Estratégia Split-Apply-Combine
+
+A análise de dados geralmente requer que sejam aplicados os seguintes passos:
+
+1. separar (split) os dados em partes.
+2. aplicar (apply) algumas funções a cada parte.
+3. juntar (combine) juntar tudo novamente.
+ 
+O pacote *dplyr*, do paradígma *tidyverse*, oferece vários *verbos* (funções) para executar as tarefas acima que substituem as funções nativas do R (*apply()*, *aggregate()* , *tapply()* e *by()*) que são mais complexas e pouco intuitivas. As funções abaixo serão usadas para esse propósito, e grande parte do trabalho é executado com essas funções. 
+
+**Para manipular dados (*dataframe*)**
+
+  * group_by (agrupar) - para agrupar em classes (*factor*)
+  
+  * summarise (sumarizar) - reduz variáveis a valores.
+<img src = "http://jules32.github.io/2016-07-12-Oxford/dplyr_tidyr/img/rstudio-cheatsheet-summarise.png", width = "30">
+  
+  * filter (filtrar) - mantém linhas (observações) que obdecem determinados critérios.
+  <img src = "http://jules32.github.io/2016-07-12-Oxford/dplyr_tidyr/img/rstudio-cheatsheet-filter.png", width = 30%>
+  
+  * select (selecionar) - seleciona colunas pelo nome.
+    <img src = "http://jules32.github.io/2016-07-12-Oxford/dplyr_tidyr/img/rstudio-cheatsheet-select.png", width = 30%>
+  
+  * mutate (alterar): adidciona uma nova variável
+  <img src = "http://jules32.github.io/2016-07-12-Oxford/dplyr_tidyr/img/rstudio-cheatsheet-mutate.png", width = ""30%>
+  
+ * arrange (arranjar) - reordena linhas de acordo com uma variável. 
+
+
+Uma vantagem desse grupo de funções, em relação às funções nativas da linguagem R, é que elas foram desenhadas para serem agnósticas em relação à linguagem. Ou seja, seguem princípios de Normalização de Base de Dados, usados por outras linguangens como a SQL. Combinar essas funções com álgebra boleana e o comando *% > %* (*pipe*) é a base para aplicar a gramática de dados. 
+
+Já utilizamos a função *group_by* no exemplo anterior para extrair estatísticas de categorias de uma base de dados. Os exemplos abaixo demonstram como aplicá-la com outras funções de manipulação de dados.
+
+** EXERCÍCIO 1**: Como a clareza (clarity) e a cor (color) de um diamante afeta o preço da categoria *Premium*?
+
+```{r exemplo4, exercise = TRUE}
+diamonds %>%
+  filter(cut == "Premium") %>% # seleciona os diamantes da classe Premium.
+  group_by(clarity,color) %>% # agrupa essa seleção pela classe clarity.
+  summarize(Preço.Médio = mean(price)) %>% # extrai o preço médio.
+  arrange(Preço.Médio) # ordena do menor para o maior.
+```
+
+** EXERCÍCIO 2**: Conte o número de diamantes da categoria *Premium* pela cor e pela clareza?
+
+
+```{r exemplo5, exercise = TRUE}
+diamonds %>%
+  filter(cut == "Premium") %>%
+  count(color, clarity) %>% # conta o número de observações.
+  spread(clarity, n) # n armazena o resultada da função count().
+```
+
+* spread: espalha as linhas em colunas.
+
+**Exercício 3**: Calcule o preço do diamante em Real.
+```{r exemplo6, exercise = TRUE}
+diamonds %>%
+  mutate(Preço.Real = price*3.2) %>%
+  head(10)
+```
+
+**Exercício 4**: Crie uma sub-amostra dos dados contendo apenas informações sobre as dimensões de diamantes Premium e Good.
+
+```{r exemplo7, exercise = TRUE}
+library(dplyr)
+subDiamonds <- diamonds %>% 
+  select(cut, x, y, z) %>% 
+  #filter(cut == "Premium" | cut == "Good")
+  filter(cut == list("Premium", "Good"))
+  
+head(subDiamonds)
+print(distinct(subDiamonds, cut))
+```
+
+
+## Reformatação de dados (Data Wrangling)
+Em muitas casos é necessário reformatar os dados para análises específicas. Os seguintes verbos são usados para a reformatação de dados.
+
+**Para reformartar tabelas (*dataframe*)**
+
+  * gather: converte os dados de colunas para linhas.
+  * spread: converte os dados de linhas para colunas.
+  * separate: separaone a coluna em muitas. 
+  * unite: juntar várias colunas em uma.
+  
+**Exercício 5**: Converta do formato largo (wide) para longo (long) com gather() para os dados de temperatura e precipitação de estações climatológicas, criados no código abaixo.
+
+```{r exemplo8, exercise = TRUE}
+#gather(data, key = "key", value = "value")
+dados = data.frame(temp = runif(5, 15, 25), 
+                 estacao1 = runif(5, 1, 3), 
+                 estacao2 = runif(5, 1, 3),
+                 estacao3 = runif(5, 1, 3))
+
+# compare e explique as diferenças de formatos dos resultados abaixo.
+gather(dados, estacao_id, precipitacao)
+gather(dados, estacao_id, precipitacao, -temp)
+```
+
+**Exercício 6**: É possível reformatar uma tabela do formato longo para o origina (largo) com a função spread(). Isse procedimento é demonstrado abaixo.
+
+```{r exemplo9, exercise = TRUE}
+library(dplyr)
+dados = data.frame(temp = runif(5, 15, 25), 
+                 estacao1 = runif(5, 1, 3), 
+                 estacao2 = runif(5, 1, 3),
+                 estacao3 = runif(5, 1, 3))
+
+dados_longo <- gather(dados, estacao_id, precipitacao, -temp)
+dados_largo <- spread(dados_longo, estacao_id, precipitacao)
+```
+
+Essas técnicas de reformatação de dados tabulares serão aplicadas com muita freqüência em modelos estatísticos e para visualização de dados.
+
+<img src = "http://garrettgman.github.io/images/tidy-8.png", width = "50%">
+
+
+<img src = "http://ohi-science.org/data-science-training/img/rstudio-cheatsheet-reshaping-data-gather.png", width = "50%">
+
+
+
